@@ -11,10 +11,10 @@ static int state = 0;
 
 void seed(int seed)
 {
-    state = seed;
+        state = seed;
 }
 
 int next(void)
 {
-    return state = (0x5DEECE66D * state + 11) & 2147483647;
+        return state = (0x5DEECE66D * state + 11) & 2147483647;
 }

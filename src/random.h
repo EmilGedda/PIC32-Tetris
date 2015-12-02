@@ -4,7 +4,7 @@
 /* Seeding the number generator */
 void seed(int seed);
 
-/* Returns the next pseudogenerated number */
+/* Returns the next pseudo generated number */
 int next(void);
 
 #endif
