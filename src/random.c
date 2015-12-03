@@ -9,12 +9,12 @@
 
 static int state = 0;
 
-void seed(int seed)
+void rseed(int seed)
 {
         state = seed;
 }
 
-int next(void)
+int rand(void)
 {
         return state = (0x5DEECE66D * state + 11) & 2147483647;
 }
