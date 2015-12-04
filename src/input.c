@@ -21,6 +21,7 @@ struct button {
         int shift;
 };
 
+/* Note how BTN1 uses a different port than 2, 3, and 4 and thus requires a separate function */
 int get_portf(int shift) {
         return (PORTF >> shift) & 1;
 }
@@ -31,8 +32,11 @@ int get_portd(int shift) {
 
 static struct button buttons[4];
 
+/* Initialises button structs for each button and configures the
+ * relevant I/O port pins as inputs. */
 void inputinit(void)
 {
+        /* TRISx: Data Direction register for the module x */
         TRISFSET = 0x1;  /* BTN1 */
         TRISDSET = 0x70; /* BTN2, BTN3, and BTN4 */
 
