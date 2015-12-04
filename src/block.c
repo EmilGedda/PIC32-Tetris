@@ -1,9 +1,11 @@
-#include "stdlib.h"
-#include "random.c"
 
-#define BLOCKSIZE 4
+//#include "random.c"
+#include "block.h"
 
-static char dims[7][BLOCKSIZE][BLOCKSIZE] = {  
+//void shuffle(char bag[][4][4], int size);
+void copyarray(char *from[7][4][4], char *to[7][4][4]);
+
+static char dims[7][4][4] = {  
 {  
         {0, 0, 0, 0},
         {0, 0, 0, 0},  
@@ -41,43 +43,52 @@ static char dims[7][BLOCKSIZE][BLOCKSIZE] = {
         {1, 1, 1, 0}
 }};
 
-struct block {
-        int dim[BLOCKSIZE][BLOCKSIZE];
-        int pos_x; //top left
-        int pos_y; //top left
-};
-
-struct *block next_block()
+struct block *next_block()
 {
+        static struct block blocks[7];
         static int count = 7;
+        static const char tmp[7][4][4];
 
         if (count > 6) {
-                shuffle(dims, 7);
+                copyarray(&dims, &tmp);
+                shuffle(&tmp, 7);
+
+                for(int i = 0; i < 7; i++){
+                        struct block curr; //= blocks[i];
+                        curr.dim = &tmp[i];
+                        curr.pos_x = 0;
+                        curr.pos_y = 0;         
+                        blocks[i] = curr;
+                }
+
                 count = 0;
-        }
-
-        struct block *current = malloc(sizeof(struct block));
-
-        *current = (struct block) {
-                .dim = dims[count++];
-        };
-
-        return current;
+        }		
+        return &blocks[count++];
 }
 
-void shuffle(char ***bag, int size)
+void copyarray(char **from[7][4][4], char **to[7][4][4])
+{ 
+        for(int i = 0; i < 12; ++i)
+        {
+                for(int j = 0; j < 51; ++j)
+                {
+                        for(int k = 0; k < 4; ++k)
+                        {
+                                *to[i][j][k] = *from[i][j][k];
+                        }
+                }
+        }
+        
+}
+
+void shuffle(char *bag[][4][4], int size)
 {
         for(int i = 0; i < size; i++) {
-                j = next() % (i + 1);
-                swap(bag, i, j);
+                int j = rand() % (i + 1);
+                char tmp[4][4] = *bag[i];
+                *bag[i] = *bag[j];
+                *bag[j] = tmp
         }
-}
-
-void swap(char ***bag, int i, int j)
-{
-        struct block tmp = bag[i];
-        bag[i] = bag[j];
-        bag[j] = tmp;
 }
 
 void move_right(struct block *b)

@@ -12,8 +12,8 @@ PROGNAME	= outfile
 LINKSCRIPT	:= p$(shell echo "$(DEVICE)" | tr '[:upper:]' '[:lower:]').ld
 
 # Compiler and linker flags
-CFLAGS		+= -ffreestanding -std=c11 -march=mips32r2 -msoft-float -Wa,-msoft-float
-ASFLAGS		+= -msoft-float
+CFLAGS		+= -ffreestanding -march=mips32r2 -msoft-float -mno-memcpy -std=c11 -Wa,-msoft-float
+ASFLAGS		+= -msoft-float -mno-memcpy
 LDFLAGS		+= -T $(LINKSCRIPT)
 
 # Filenames
