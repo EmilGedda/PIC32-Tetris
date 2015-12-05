@@ -5,6 +5,6 @@
 void inputinit(void);
 
 /* Input Loop */
-int* inputloop(void);
+void inputloop(int *arr);
 
 #endif

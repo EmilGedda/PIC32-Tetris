@@ -8,6 +8,6 @@ void display_init(void);
 void display_bitmap(const char *bmp);
 
 /* Scales game graphics accordingly and displays them on OLED display */
-void display_game(char *arr);
+void display_game(char (*arr)[16][64]);
 
 #endif

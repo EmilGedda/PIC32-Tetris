@@ -59,9 +59,8 @@ void inputinit(void)
         }
 }
 
-int* inputloop(void)
+void inputloop(int *arr)
 {
-        int arr[4];
         for (int i = 0; i < sizeof(buttons); i++) {
                 struct button btn = buttons[i];
                 /* If cooldown is not active and button is pressed */
@@ -73,5 +72,4 @@ int* inputloop(void)
                         arr[i] = 0;
                 }
         }
-        return arr;
 }

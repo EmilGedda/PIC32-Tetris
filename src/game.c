@@ -17,7 +17,8 @@ void run(void)
 	curr = next_block(); 
 	for(;;)
 	{
-		int *inputs = inputloop();
+		int inputs[4];
+		inputloop(inputs);
 		handle_input(inputs, curr);
 	}
 }

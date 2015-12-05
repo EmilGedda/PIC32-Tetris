@@ -4,7 +4,7 @@
 
 static char board[16][64];
 
-void copyarray(char (*from)[16][64], char (*to)[16][64]);
+void _copyarray(char (*from)[16][64], char (*to)[16][64]);
 void merge(struct block *blk, char (*b)[16][64]);
 
 
@@ -28,7 +28,7 @@ void merge(struct block *blk, char (*b)[16][64])
 void update_board(struct block *blk)
 {
 	static char tmp[16][64];
-	copyarray(&board, &tmp);
+	_copyarray(&board, &tmp);
 	merge(blk, &tmp);
 	display_game(&tmp);
 }
@@ -48,7 +48,7 @@ char can_move_down(struct block *blk)
 	return 1;	
 }
 
-void copyarray(char (*from)[16][64], char (*to)[16][64])
+void _copyarray(char (*from)[16][64], char (*to)[16][64])
 { 
 	for (int i = 0; i < 16; ++i)
         {

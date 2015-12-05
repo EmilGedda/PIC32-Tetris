@@ -119,18 +119,16 @@ void display_update(void) {
         }
 }
 
-char* scale_array(char *bmp, int scale) {
-        char *scaledbmp;
+char* scale_array(char (*bmp)[16][64], int scale, char *scaledbmp) {
         int count = 0;
-        for (int i = 0; i < sizeof(bmp); i++) {
-                for (int j = 0; j < sizeof(bmp[i]); j++) {
+        for (int i = 0; i < 16; i++) {
+                for (int j = 0; j < 64; j++) {
                         for (int k = 0; k < scale; k++) {
-                                scaledbmp[count] = bmp[j];
+                                scaledbmp[count] = *bmp[i][j];
                                 count++;
                         }
                 }
         }
-        return scaledbmp;
 }
 
 void display_string(int line, char *s) {
@@ -148,9 +146,10 @@ void display_string(int line, char *s) {
                 }
 }
 
-void display_game(char* arr) {
-        arr = scale_array(arr, 2);
-        display_bitmap(arr);
+void display_game(char (*arr)[16][64]) {
+	char *scaledbmp;
+        scale_array(arr, 2, scaledbmp);
+        display_bitmap(scaledbmp);
         display_update();
 }
 
@@ -160,6 +159,7 @@ void display_bitmap(const char *bmp) {
 
                 spi_send_recv(0x22);
                 spi_send_recv(i);
+		spi_send_recv(0x1F);
 
                 DISPLAY_CHANGE_TO_DATA_MODE;
 
