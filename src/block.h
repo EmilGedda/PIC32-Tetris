@@ -6,8 +6,9 @@ struct block {
         int pos_x; //top left
         int pos_y; //top left
 };
-
+/* Returns the next block in the bag, and consumes it */
 struct block *next_block();
+
 void move_right(struct block *b);
 void move_left(struct block *b);
 void move_down(struct block *b);
