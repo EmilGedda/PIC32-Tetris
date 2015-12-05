@@ -1,8 +1,9 @@
 /* Insert comment about file display.c here */
 
-#include "display.h"
 #include <stdint.h>
 #include <pic32mx.h>
+#include "font.h"
+#include "display.h"
 
 #define DISPLAY_CHANGE_TO_COMMAND_MODE (PORTFCLR = 0x10)
 #define DISPLAY_CHANGE_TO_DATA_MODE (PORTFSET = 0x10)
@@ -13,11 +14,13 @@
 #define DISPLAY_ACTIVATE_VDD (PORTFCLR = 0x40)
 #define DISPLAY_ACTIVATE_VBAT (PORTFCLR = 0x20)
 
+char textbuffer[4][16];
+
 uint8_t spi_send_recv(uint8_t data) {
-        while (!(SPI2STAT & 0x08));
-                SPI2BUF = data;
-        while (!(SPI2STAT & 1));
-                return SPI2BUF;
+        while (!(SPI2STAT & 0x08));     /* SPI Transmit Buffer Empty Status bit, 1 = empty */
+                SPI2BUF = data;         /* SPI Transmit and Receive Buffer Register */
+        while (!(SPI2STAT & 1));        /* SPI Receive Buffer Full Status bit, 1 = full, */
+                return SPI2BUF;         /* cleared when SPI2BUF is written to */
 }
 
 void sleep(int cyc) {
@@ -88,4 +91,63 @@ void display_init(void) {
         spi_send_recv(0x20);
         
         spi_send_recv(0xAF);
+}
+
+void display_update(void) {
+        int c;
+        for (int i = 0; i < 4; i++) {
+                DISPLAY_CHANGE_TO_COMMAND_MODE;
+
+                spi_send_recv(0x22);
+                spi_send_recv(i);
+                
+                spi_send_recv(0x0);
+                spi_send_recv(0x10);
+                
+                DISPLAY_CHANGE_TO_DATA_MODE;
+                
+                for (int j = 0; j < 16; j++) {
+                        c = textbuffer[i][j];
+                        if(c & 0x80)
+                                continue;
+                        
+                        for (int k = 0; k < 8; k++)
+                                spi_send_recv(font[c*8 + k]);
+                }
+        }
+}
+
+uint8_t* scale_array(uint8_t *bmp, int scale) {
+        uint8_t *scaledbmp;
+        int count = 0;
+        for (int i = 0; i < sizeof(bmp); i++) {
+                for (int j = 0; j < sizeof(bmp[i]); j++) {
+                        for (int k = 0; k < scale; k++) {
+                                scaledbmp[count] = bmp[j];
+                                count++;
+                        }
+                }
+        }
+        return scaledbmp;
+}
+
+void display_game(uint8_t* arr) {
+        arr = scale_array(arr, 2);
+        display_bitmap(arr);
+        display_update();
+}
+
+void display_bitmap(const uint8_t *bmp) {
+        for (int i = 0; i < 4; i++) {
+                DISPLAY_CHANGE_TO_COMMAND_MODE;
+
+                spi_send_recv(0x22);
+                spi_send_recv(i);
+
+                DISPLAY_CHANGE_TO_DATA_MODE;
+
+                for (int j = 0; j < 32; j++)
+                        spi_send_recv(~bmp[i*32 + j]);
+        }
+        display_update();
 }
