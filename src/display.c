@@ -14,15 +14,15 @@
 #define DISPLAY_ACTIVATE_VBAT (PORTFCLR = 0x20)
 
 uint8_t spi_send_recv(uint8_t data) {
-        while(!(SPI2STAT & 0x08));
-        SPI2BUF = data;
-        while(!(SPI2STAT & 1));
-        return SPI2BUF;
+        while (!(SPI2STAT & 0x08));
+                SPI2BUF = data;
+        while (!(SPI2STAT & 1));
+                return SPI2BUF;
 }
 
 void sleep(int cyc) {
         int i;
-        for(i = cyc; i > 0; i--);
+        for (i = cyc; i > 0; i--);
 }
 
 void display_init(void) {
