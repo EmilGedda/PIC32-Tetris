@@ -11,7 +11,7 @@
  */
 
 #include "input.h"
-#include "pic32mx.h"
+#include <pic32mx.h>
 
 #define COOLDOWN 1000
 
