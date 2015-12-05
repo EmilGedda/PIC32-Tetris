@@ -8,6 +8,7 @@
 
 #include "input.h"
 #include "display.h"
+#include <pic32mx.h>
 
 void _nmi_handler() {
 	for(;;);
@@ -28,5 +29,5 @@ void _on_bootstrap() {
 	TMR2 = 0;			/* Reset Timer Value */
 	PR2 = 31250;			/* Set period register */
 	T2CON = 0b1000000001110000;	/* Set internal 16-bit timer. Prescaling 1:256 */
-	asm volatile("ei");		/* Enable interrupt */
+	__asm__ volatile("ei");		/* Enable interrupt */
 }

@@ -5,7 +5,7 @@
 
 int main(void)
 {
-	rinit(0);
+	rseed(0);
 	run();
 }
 
@@ -14,5 +14,4 @@ void user_isr(void)
 	if (!(IFS(0) & 0x100)) return;	/* Poll time-out event flag */
     	IFS(0) &= ~0x100;		/* Clear IFS */
 	on_tick();
-	display_update();
 }

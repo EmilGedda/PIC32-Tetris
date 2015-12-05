@@ -119,8 +119,8 @@ void display_update(void) {
         }
 }
 
-uint8_t* scale_array(uint8_t *bmp, int scale) {
-        uint8_t *scaledbmp;
+char* scale_array(char *bmp, int scale) {
+        char *scaledbmp;
         int count = 0;
         for (int i = 0; i < sizeof(bmp); i++) {
                 for (int j = 0; j < sizeof(bmp[i]); j++) {
@@ -148,13 +148,13 @@ void display_string(int line, char *s) {
                 }
 }
 
-void display_game(uint8_t* arr) {
+void display_game(char* arr) {
         arr = scale_array(arr, 2);
         display_bitmap(arr);
         display_update();
 }
 
-void display_bitmap(const uint8_t *bmp) {
+void display_bitmap(const char *bmp) {
         for (int i = 0; i < 4; i++) {
                 DISPLAY_CHANGE_TO_COMMAND_MODE;
 

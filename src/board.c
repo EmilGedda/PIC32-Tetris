@@ -1,9 +1,12 @@
-#include "block.c"
+#include "block.h"
 #include "display.h"
 #include "board.h"
 
-static char[16][64] board;
-void copyarray(char (*from)[4][4], char (*to)[4][4]);
+static char board[16][64];
+
+void copyarray(char (*from)[16][64], char (*to)[16][64]);
+void merge(struct block *blk, char (*b)[16][64]);
+
 
 void merge_with_board(struct block *blk)
 {
@@ -16,8 +19,9 @@ void merge(struct block *blk, char (*b)[16][64])
 		for(int j = 0; j < 4; j++) {
 			int global_y = blk->pos_y + i;
 			int global_x = blk->pos_x + j;
-			*b[global_x][global_y] |= blk->dim[j][i];
-		}
+			if (blk->dim[j][i])
+				*b[global_x][global_y] = 1;
+		}	
 	}
 }
 
@@ -32,13 +36,11 @@ void update_board(struct block *blk)
 
 char can_move_down(struct block *blk)
 {
-	char[4][4] blkdims = blk->dim;
-
 	for (int i = 3; i >= 0; i--) {
 		for(int j = 0; j < 4; j++) {
 			int global_y = blk->pos_y + i;
 			int global_x = blk->pos_x + j; 
-			if (blkdims[j][i] && board[global_x][global_y+1])
+			if (blk->dim[j][i] && board[global_x][global_y+1])
 				return 0;
 		}
 	}
