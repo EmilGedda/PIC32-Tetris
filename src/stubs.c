@@ -5,6 +5,10 @@
  * For copyright and licensing, see file COPYING */
 
 /* Non-Maskable Interrupt; something bad likely happened, so hang */
+
+#include "input.h"
+#include "display.h"
+
 void _nmi_handler() {
 	for(;;);
 }
@@ -16,5 +20,6 @@ void _on_reset() {
 
 /* This function is called before main() is called, you can do setup here */
 void _on_bootstrap() {
-	
+	inputinit();
+	display_init();	
 }
