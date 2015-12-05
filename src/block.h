@@ -2,7 +2,7 @@
 #define BLOCK_H
 
 struct block {
-        int *dim[4][4];
+        char (*dim)[4][4];
         int pos_x; //top left
         int pos_y; //top left
 };

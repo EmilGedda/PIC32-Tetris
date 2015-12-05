@@ -1,9 +1,9 @@
 
-//#include "random.c"
+#include "random.h"
 #include "block.h"
 
-//void shuffle(char bag[][4][4], int size);
-void copyarray(char *from[7][4][4], char *to[7][4][4]);
+void shuffle(struct block (*bag)[7], int size);
+void copyarray(char (*from)[4][4], char (*to)[4][4]);
 
 static char dims[7][4][4] = {  
 {  
@@ -47,50 +47,40 @@ struct block *next_block()
 {
         static struct block blocks[7];
         static int count = 7;
-        static const char tmp[7][4][4];
+        static char tmp[7][4][4];
 
         if (count > 6) {
-                copyarray(&dims, &tmp);
-                shuffle(&tmp, 7);
+		for(int i = 0; i < 7; i++){
+                	copyarray(&dims[i], blocks[i].dim);
+			blocks[i].pos_x = 0;
+			blocks[i].pos_y = 0;
+		}
+	       shuffle(&blocks, 7);	
 
-                for(int i = 0; i < 7; i++){
-                        struct block curr; //= blocks[i];
-                        curr.dim = &tmp[i];
-                        curr.pos_x = 0;
-                        curr.pos_y = 0;         
-                        blocks[i] = curr;
-                }
-
-                count = 0;
         }		
         return &blocks[count++];
 }
 
-void copyarray(char **from[7][4][4], char **to[7][4][4])
+void copyarray(char (*from)[4][4], char (*to)[4][4])
 { 
-        for(int i = 0; i < 12; ++i)
+	for(int i = 0; i < 4; ++i)
         {
-                for(int j = 0; j < 51; ++j)
+        	for(int j = 0; j < 4; ++j)
                 {
-                        for(int k = 0; k < 4; ++k)
-                        {
-                                *to[i][j][k] = *from[i][j][k];
-                        }
+             		*to[i][j] = *from[i][j];
                 }
-        }
-        
+	}       
 }
-
-void shuffle(char *bag[][4][4], int size)
+void shuffle(struct block (*bag)[7], int size)
 {
-        for(int i = 0; i < size; i++) {
-                int j = rand() % (i + 1);
-                char tmp[4][4] = *bag[i];
-                *bag[i] = *bag[j];
-                *bag[j] = tmp
-        }
+	for(int i = 0; i < 7; i++)
+	{
+		int j = rand() % (i + 1);
+		struct block curr = *bag[i];
+		*bag[i] = *bag[j];
+		*bag[j] = *bag[i];
+	}
 }
-
 void move_right(struct block *b)
 {
         //TODO: Add validation
