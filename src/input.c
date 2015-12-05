@@ -64,10 +64,14 @@ int* inputloop(void)
         int arr[4];
         for (int i = 0; i < sizeof(buttons); i++) {
                 struct button btn = buttons[i];
-                char ispressed = btn.port(btn.shift);
-                btn.cooldown = !btn.cooldown && ispressed ? 
-                        COOLDOWN : btn.cooldown - 1;              
-                arr[i] = ispressed;
+                /* If cooldown is not active and button is pressed */
+                if (!btn.cooldown && btn.port(btn.shift)) {
+                        btn.cooldown = COOLDOWN;
+                        arr[i] = 1;
+                } else {
+                        btn.cooldown--;
+                        arr[i] = 0;
+                }
         }
         return arr;
 }
