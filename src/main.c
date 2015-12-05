@@ -1,9 +1,11 @@
 #include "game.h"
 #include <pic32mx.h>
 #include "display.h"
+#include "random.h"
 
 int main(void)
 {
+	rinit(0);
 	run();
 }
 
