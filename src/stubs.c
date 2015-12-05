@@ -21,5 +21,12 @@ void _on_reset() {
 /* This function is called before main() is called, you can do setup here */
 void _on_bootstrap() {
 	inputinit();
-	display_init();	
+	display_init();
+
+	IEC(0) = 0x100;			/* Interrupt Enable Control */
+	IPC(2) = 0b111110100;		/* Interrupt Priority Control */
+	TMR2 = 0;			/* Reset Timer Value */
+	PR2 = 31250;			/* Set period register */
+	T2CON = 0b1000000001110000;	/* Set internal 16-bit timer. Prescaling 1:256 */
+	asm volatile("ei");		/* Enable interrupt */
 }
