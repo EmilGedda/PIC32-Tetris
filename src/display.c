@@ -112,22 +112,17 @@ void display_update(void) {
                 for (int j = 0; j < 16; j++) {
                         c = textbuffer[i][j];
                       //  if (c & 0x80)
-	               //         continue;
-                        
+	                  //         continue;
                         for (int k = 0; k < 8; k++) /* for columns */
                                 spi_send_recv( k & 1 ? 0xAA : (0xAA >> 1));
                 }
         }
 }
 
-char* scale_array(char (*bmp)[16][64], int scale, char *scaledbmp) {
-        int count = 0;
-        for (int i = 0; i < 16; i++) {
-                for (int j = 0; j < 64; j++) {
-                        for (int k = 0; k < scale; k++) {
-                                scaledbmp[count] = (*bmp)[i][j];
-                                count++;
-                        }
+char* scale_array(char (*bmp)[16][64], char *scaledbmp) {
+        for (int i = 0; i < 32; i++) {
+                for (int j = 0; j < 128; j++) {
+                        scaledbmp[i][j] = (*bmp)[i/2][j/2];
                 }
         }
 }
@@ -169,22 +164,23 @@ void display_bitmap(int x, const char *bmp) {
         }
         display_update();
 }
+
 char* itoaconv(int num) {
         register int i, sign;
         static char itoa_buffer[ITOA_BUFSIZ];
         static const char maxneg[] = "-2147483648";
 
         itoa_buffer[ITOA_BUFSIZ - 1] = 0;   /* Insert the end-of-string marker. */
-        sign = num;                           /* Save sign. */
-        if (num < 0 && num - 1 > 0) {        /* Check for most negative integer */
+        sign = num;                         /* Save sign. */
+        if (num < 0 && num - 1 > 0) {       /* Check for most negative integer */
                 for (i = 0; i < sizeof(maxneg); i += 1)
                         itoa_buffer[i + 1] = maxneg[i];
                 i = 0;
         } else {
-                if (num < 0) num = -num;           /* Make number positive. */
+                if (num < 0) num = -num;            /* Make number positive. */
                         i = ITOA_BUFSIZ - 2;        /* Location for first ASCII digit. */
                 do {
-                        itoa_buffer[i] = num % 10 + '0';      /* Insert next digit. */
+                        itoa_buffer[i] = num % 10 + '0';        /* Insert next digit. */
                         num = num / 10;                         /* Remove digit from number. */
                         i -= 1;                                 /* Move index to next empty position. */
                 } while (num > 0);
