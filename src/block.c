@@ -87,15 +87,15 @@ void shuffle(struct block (*bag)[NUMBLOCKS])
 		*bag[j] = *bag[i];
 	}
 }
-void move_right(struct block *b)
+void move_up(struct block *b)
 {
         /* TODO: Add validation */
-        b->pos_x++;
+        b->pos_y--;
 }
 void move_left(struct block *b)
 {
         /* TODO: Add validation */
-        b->pos_x--;
+        b->pos_x++;
 }
 
 void move_down(struct block *b)

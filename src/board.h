@@ -14,6 +14,6 @@ void rotate_right(struct block *blk);
 void rotate_left(struct block *blk);
 
 /* Returns non zero value if the specified block has space below */
-char can_move_down(struct block *blk);
+char can_move_left(struct block *blk);
 
 #endif

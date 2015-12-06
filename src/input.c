@@ -61,10 +61,10 @@ void inputinit(void)
 
 void inputloop(int *arr)
 {
-        for (int i = 0; i < sizeof(buttons); i++) {
+        for (int i = 0; i < 4; i++) {
                 struct button btn = buttons[i];
                 /* If cooldown is not active and button is pressed */
-                if (!btn.cooldown && btn.port(btn.shift)) {
+                if (btn.cooldown <= 0 && btn.port(btn.shift)) {
                         btn.cooldown = COOLDOWN;
                         arr[i] = 1;
                 } else {

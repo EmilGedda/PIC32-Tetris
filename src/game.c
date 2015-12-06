@@ -9,21 +9,21 @@ void handle_input(int *inputs, struct block *blk);
 static void (*f[4])(struct block *blk) = {
 		rotate_right,
 		rotate_left,
-		move_right,
-		move_left
+		move_down,
+		move_up
 };
 
 void run(void)
 {
 	curr = next_block(); 
 	TRISESET = ~0xFF;
-	display_init();
 	
 	for(;;)
 	{
 		int inputs[4];
 		inputloop(inputs);
 		handle_input(inputs, curr);
+	//	PORTE = inputs[0];
 	}
 }
 
@@ -37,13 +37,15 @@ void handle_input(int *inputs, struct block *blk)
 void on_tick()
 {
 	static int cnt = 0;
-	if (can_move_down(curr)) {
-		move_down(curr);
+	move_left(curr);
+	if (can_move_left(curr)) {
+		//move_left(curr);
 	} else {
-		merge_with_board(curr);
-		curr = next_block();
+	//	merge_with_board(curr);
+	//	curr = next_block();
 	}
 	update_board(curr);
+	
 	PORTE = ++cnt;
 	
 }
