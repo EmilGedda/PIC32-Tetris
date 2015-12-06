@@ -30,7 +30,7 @@ void update_board(struct block *blk)
 	static char tmp[16][64];
 	_copyarray(&board, &tmp);
 	merge(blk, &tmp);
-	display_game(&tmp);
+	//display_game(&tmp);
 }
 
 
@@ -54,7 +54,7 @@ void _copyarray(char (*from)[16][64], char (*to)[16][64])
         {
         	for (int j = 0; j < 64; ++j)
                 {
-             		*to[i][j] = *from[i][j];
+             		(*to)[i][j] = (*from)[i][j];
                 }
 	}       
 }

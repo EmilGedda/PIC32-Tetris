@@ -71,7 +71,7 @@ void copyarray(char (*from)[4][4], char (*to)[4][4])
         {
         	for (int j = 0; j < 4; ++j)
                 {
-             		*to[i][j] = *from[i][j];
+             		(*to)[i][j] = (*from)[i][j];
                 }
 	}       
 }

@@ -124,7 +124,7 @@ char* scale_array(char (*bmp)[16][64], int scale, char *scaledbmp) {
         for (int i = 0; i < 16; i++) {
                 for (int j = 0; j < 64; j++) {
                         for (int k = 0; k < scale; k++) {
-                                scaledbmp[count] = *bmp[i][j];
+                                scaledbmp[count] = (*bmp)[i][j];
                                 count++;
                         }
                 }

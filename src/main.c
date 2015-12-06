@@ -15,3 +15,4 @@ void user_isr(void)
     	IFS(0) &= ~0x100;		/* Clear IFS */
 	on_tick();
 }
+

@@ -1,7 +1,8 @@
 #include "block.h"
 #include "input.h"
 #include "board.h"
-
+#include <pic32mx.h>
+#include "random.h"
 static struct block *curr; 
 void handle_input(int *inputs, struct block *blk);
 
@@ -15,6 +16,8 @@ static void (*f[4])(struct block *blk) = {
 void run(void)
 {
 	curr = next_block(); 
+	TRISESET = ~0xFF;
+	
 	for(;;)
 	{
 		int inputs[4];
@@ -32,6 +35,7 @@ void handle_input(int *inputs, struct block *blk)
 
 void on_tick()
 {
+	static int cnt = 0;
 	if (can_move_down(curr)) {
 		move_down(curr);
 	} else {
@@ -39,4 +43,6 @@ void on_tick()
 		curr = next_block();
 	}
 	update_board(curr);
+	PORTE = cnt++;
+	TMR2 = 0;
 }

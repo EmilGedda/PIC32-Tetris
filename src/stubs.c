@@ -11,7 +11,10 @@
 #include <pic32mx.h>
 
 void _nmi_handler() {
-	for(;;);
+	for (;;) {
+		PORTE = 0xFF;
+	}
+
 }
 
 /* This function is called upon reset, before .data and .bss is set up */
@@ -29,5 +32,6 @@ void _on_bootstrap() {
 	TMR2 = 0;			/* Reset Timer Value */
 	PR2 = 31250;			/* Set period register */
 	T2CON = 0b1000000001110000;	/* Set internal 16-bit timer. Prescaling 1:256 */
-	__asm__ volatile("ei");		/* Enable interrupt */
+	__asm__ volatile("ei");		/* Enable interrupt */	
+	
 }
