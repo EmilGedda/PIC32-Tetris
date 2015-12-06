@@ -17,6 +17,7 @@ void run(void)
 {
 	curr = next_block(); 
 	TRISESET = ~0xFF;
+	display_init();
 	
 	for(;;)
 	{
@@ -43,6 +44,6 @@ void on_tick()
 		curr = next_block();
 	}
 	update_board(curr);
-	PORTE = cnt++;
-	TMR2 = 0;
+	PORTE = ++cnt;
+	
 }

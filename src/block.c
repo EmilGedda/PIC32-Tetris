@@ -49,8 +49,8 @@ static char dims[NUMBLOCKS][4][4] = {
 struct block *next_block()
 {
         static struct block blocks[NUMBLOCKS];
-        static int count = sizeof(blocks);
-        static char tmp[sizeof(blocks)][4][4];
+        static int count = NUMBLOCKS;
+        static char tmp[NUMBLOCKS][4][4];
 
         if (count > 6) {
 		for (int i = 0; i < sizeof(blocks); i++){ //Re-init our bag of blocks
@@ -59,6 +59,7 @@ struct block *next_block()
 			blocks[i].pos_y = 0;
 		}
 	       shuffle(&blocks); // Shuffle the bag
+	       count = 0;
         }		
 
         return &blocks[count++];

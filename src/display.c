@@ -19,10 +19,10 @@
 char textbuffer[4][16];
 
 uint8_t spi_send_recv(uint8_t data) {
-        while (!(SPI2STAT & 0x08));     /* SPI Transmit Buffer Empty Status bit, 1 = empty */
-                SPI2BUF = data;         /* SPI Transmit and Receive Buffer Register */
-        while (!(SPI2STAT & 1));        /* SPI Receive Buffer Full Status bit, 1 = full, */
-                return SPI2BUF;         /* cleared when SPI2BUF is written to */
+        while (!(SPI2STAT & 0x08));	/* SPI Transmit Buffer Empty Status bit, 1 = empty */
+        SPI2BUF = data;			/* SPI Transmit and Receive Buffer Register */
+        while (!(SPI2STAT & 1));	/* SPI Receive Buffer Full Status bit, 1 = full, */
+        return SPI2BUF;  	     	/* cleared when SPI2BUF is written to */
 }
 
 void sleep(int cyc) {
@@ -66,6 +66,7 @@ void display_init(void) {
         /* SPI2CON bit ON = 1; */
         SPI2CONSET = 0x8000;
 
+	/* display_init */
         DISPLAY_CHANGE_TO_COMMAND_MODE;
         sleep(10);
         DISPLAY_ACTIVATE_VDD;
@@ -110,11 +111,11 @@ void display_update(void) {
                 
                 for (int j = 0; j < 16; j++) {
                         c = textbuffer[i][j];
-                        if(c & 0x80)
-                                continue;
+                      //  if (c & 0x80)
+	               //         continue;
                         
-                        for (int k = 0; k < 8; k++)
-                                spi_send_recv(font[c*8 + k]);
+                        for (int k = 0; k < 8; k++) /* for columns */
+                                spi_send_recv( k & 1 ? 0xAA : (0xAA >> 1));
                 }
         }
 }
@@ -132,10 +133,7 @@ char* scale_array(char (*bmp)[16][64], int scale, char *scaledbmp) {
 }
 
 void display_string(int line, char *s) {
-        if (line < 0 || line >= 4)
-                return;
-        if (!s)
-                return;
+        if (line < 0 || line >= 4 || !s) return;
         
         for (int i = 0; i < 16; i++)
                 if (*s) {
@@ -147,20 +145,23 @@ void display_string(int line, char *s) {
 }
 
 void display_game(char (*arr)[16][64]) {
-	char *scaledbmp;
-        scale_array(arr, 2, scaledbmp);
-        display_bitmap(scaledbmp);
+	//char *scaledbmp;
+       // scale_array(arr, 2, scaledbmp);
+	display_string(0, "A");
+	//display_bitmap(0, scaledbmp);
         display_update();
 }
 
-void display_bitmap(const char *bmp) {
+void display_bitmap(int x, const char *bmp) {
         for (int i = 0; i < 4; i++) {
                 DISPLAY_CHANGE_TO_COMMAND_MODE;
 
                 spi_send_recv(0x22);
                 spi_send_recv(i);
-		spi_send_recv(0x1F);
 
+		spi_send_recv(x & 0xF);
+		spi_send_recv(0x10 | ((x >> 4) & 0xF));
+	
                 DISPLAY_CHANGE_TO_DATA_MODE;
 
                 for (int j = 0; j < 32; j++)

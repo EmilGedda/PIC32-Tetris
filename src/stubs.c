@@ -25,7 +25,6 @@ void _on_reset() {
 /* This function is called before main() is called, you can do setup here */
 void _on_bootstrap() {
 	inputinit();
-	display_init();
 
 	IEC(0) = 0x100;			/* Interrupt Enable Control */
 	IPC(2) = 0b111110100;		/* Interrupt Priority Control */

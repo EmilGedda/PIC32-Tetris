@@ -28,9 +28,9 @@ void merge(struct block *blk, char (*b)[16][64])
 void update_board(struct block *blk)
 {
 	static char tmp[16][64];
-	_copyarray(&board, &tmp);
-	merge(blk, &tmp);
-	//display_game(&tmp);
+//	_copyarray(&board, &tmp);
+//	merge(blk, &tmp);
+	display_game(&tmp);
 }
 
 
