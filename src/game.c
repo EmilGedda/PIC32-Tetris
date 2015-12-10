@@ -39,10 +39,10 @@ void on_tick()
 	static int cnt = 0;
 	move_left(curr);
 	if (can_move_left(curr)) {
-		//move_left(curr);
+		move_left(curr);
 	} else {
-	//	merge_with_board(curr);
-	//	curr = next_block();
+		merge_with_board(curr);
+		curr = next_block();
 	}
 	update_board(curr);
 	

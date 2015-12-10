@@ -36,15 +36,12 @@ void update_board(struct block *blk)
 
 char can_move_left(struct block *blk)
 {
-	if (blk->pos_x <= 0) return 0;
+	if (blk->pos_x <= 1) return 0;
 
-	for (int i = 3; i >= 0; i--) {
-		for(int j = 0; j < 4; j++) {
-			int global_y = blk->pos_y - i;
-			int global_x = blk->pos_x - j; 
-			if (blk->dim[j][i] && board[global_x-1][global_y])
-				return 0;
-		}
+	for (int i = 0; i < 4; i++) {
+		int global_x = blk->pos_x; 
+		if (blk->dim[0][i] && board[global_x-1][i])
+			return 0;
 	}
 	
 	return 1;	
