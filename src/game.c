@@ -17,10 +17,9 @@ void run(void)
 {
 	curr = next_block(); 
 	TRISESET = ~0xFF;
-	
+	int inputs[4];
 	for(;;)
 	{
-		int inputs[4];
 		inputloop(inputs);
 		handle_input(inputs, curr);
 	}
@@ -28,12 +27,16 @@ void run(void)
 
 void handle_input(int *inputs, struct block *blk)
 {
+	char set = 0;
 	for(int i = 0; i < 4; i++) {
 		if (inputs[i]) {
-			//f[i](blk);
-			move_down(blk);
+			f[i](blk);
+		//	move_down(blk);
+			set = 1;
 		}
 	}
+	if(set)
+		update_board(blk);
 }
 
 void on_tick()
