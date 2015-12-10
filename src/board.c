@@ -19,7 +19,7 @@ void merge(struct block *blk, char (*b)[64][16])
 		for(int j = 0; j < 4; j++) {
 			int global_x = blk->pos_x + i;
 			int global_y = blk->pos_y + j;
-			if (blk->dim[i][j])
+			if (blk->dim[i][j]) // TODO: fix
 				(*b)[global_x][global_y] = 1;
 		}	
 	}

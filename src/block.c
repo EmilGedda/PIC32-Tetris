@@ -55,8 +55,7 @@ struct block *next_block()
         if (count > 6) {
 		for (int i = 0; i < 7; i++){ //Re-init our bag of blocks
                 	copyarray(&dims[i], blocks[i].dim);
-		//	blocks[i].dim = &dims[2];
-			blocks[i].pos_x = 60;
+			blocks[i].pos_x = 62;
 			blocks[i].pos_y = 0;
 		}
 	       //shuffle(&blocks); // Shuffle the bag
