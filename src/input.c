@@ -13,20 +13,20 @@
 #include "input.h"
 #include <pic32mx.h>
 
-#define COOLDOWN 1000000000
+#define COOLDOWN (5*1e4)
 
 struct button {
         int cooldown;
-        volatile int (*port)(int);
+        int (*port)(int);
         int shift;
 };
 
 /* Note how BTN1 uses a different port than 2, 3, and 4 and thus requires a separate function */
-volatile int get_portf(int shift) {
+int get_portf(int shift) {
         return (PORTF >> shift) & 1;
 }
 
-volatile int get_portd(int shift) {
+int get_portd(int shift) {
         return (PORTD >> shift) & 1;
 }
 
@@ -59,17 +59,19 @@ void inputinit(void)
         }
 }
 
-void inputloop(int *arr)
+void inputloop(int arr[4])
 {
         for (int i = 0; i < 4; i++) {
-                struct button btn = buttons[i];
+		arr[i] = 0;
+                struct button *btn = buttons + i;
 		/* If cooldown is not active and button is pressed */
-		if (btn.cooldown <= 0 && btn.port(btn.shift)) {
-			btn.cooldown = COOLDOWN;
+		if (!btn->cooldown && btn->port(btn->shift)) {
+			btn->cooldown = 1;
 			arr[i] = 1;
-                } else {
-			btn.cooldown--;
-			arr[i] = 0;
+                }
+
+		if (!btn->port(btn->shift)) {
+			btn->cooldown = 0;
 		}
         }
 }
