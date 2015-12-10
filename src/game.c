@@ -23,23 +23,25 @@ void run(void)
 		int inputs[4];
 		inputloop(inputs);
 		handle_input(inputs, curr);
-	//	PORTE = inputs[0];
 	}
 }
 
 void handle_input(int *inputs, struct block *blk)
 {
-	for(int i = 0; i < 4; i++)
-		if (inputs[i])
-			f[i](blk);
+	for(int i = 0; i < 4; i++) {
+		if (inputs[i]) {
+			//f[i](blk);
+			move_down(blk);
+		}
+	}
 }
 
 void on_tick()
 {
 	static int cnt = 0;
-	move_left(curr);
 	if (can_move_left(curr)) {
 		move_left(curr);
+//		move_down(curr);
 	} else {
 		merge_with_board(curr);
 		curr = next_block();

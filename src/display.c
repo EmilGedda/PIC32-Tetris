@@ -109,7 +109,6 @@ void display_update(char (*bmp)[128][4]) {
                 spi_send_recv(0x10);
                 
                 DISPLAY_CHANGE_TO_DATA_MODE;
-                
                 for (int j = 0; j < 128; j++) {
 			spi_send_recv(~(*bmp)[j][i]);
                 }
@@ -129,7 +128,7 @@ void to_bitmap(char (*bmp)[128][4], char (*in)[128][32])
 	for (int i = 0; i < 128; i++){
 		for (int j = 0; j < 4; j++) {
 			char x;
-			for (int k = 0; k < 8; k++) {
+			for (int k = 7; k >= 0; k--) {
 				x <<= 1;
 				x |= (*in)[i][k+j*8] & 1;
 			}

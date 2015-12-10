@@ -13,20 +13,20 @@
 #include "input.h"
 #include <pic32mx.h>
 
-#define COOLDOWN 1000
+#define COOLDOWN 1000000000
 
 struct button {
         int cooldown;
-        int (*port)(int);
+        volatile int (*port)(int);
         int shift;
 };
 
 /* Note how BTN1 uses a different port than 2, 3, and 4 and thus requires a separate function */
-int get_portf(int shift) {
+volatile int get_portf(int shift) {
         return (PORTF >> shift) & 1;
 }
 
-int get_portd(int shift) {
+volatile int get_portd(int shift) {
         return (PORTD >> shift) & 1;
 }
 
@@ -42,7 +42,7 @@ void inputinit(void)
 
         /* Create struct for BTN 1 */
         struct button btn_one = {
-                .cooldown = COOLDOWN,
+                .cooldown = 0,
                 .port = &get_portf,
                 .shift = 1
         };
@@ -51,7 +51,7 @@ void inputinit(void)
         /* Create struct for BTN1, BTN2, and BTN3 */
         for (int i = 1; i < 4; i++) {
                 struct button btn = {
-                        .cooldown = COOLDOWN,
+                        .cooldown = 0,
                         .port = &get_portd,
                         .shift = i+4
                 };
@@ -64,11 +64,11 @@ void inputloop(int *arr)
         for (int i = 0; i < 4; i++) {
                 struct button btn = buttons[i];
                 /* If cooldown is not active and button is pressed */
-                if (btn.cooldown <= 0 && btn.port(btn.shift)) {
-                        btn.cooldown = COOLDOWN;
-                        arr[i] = 1;
-                } else {
-                        btn.cooldown--;
+                if (!btn.cooldown && btn.port(btn.shift)) {
+			btn.cooldown = 1;
+			arr[i] = 1;
+                } else if (!btn.port(btn.shift)) {
+                        btn.cooldown = 0;
                         arr[i] = 0;
                 }
         }

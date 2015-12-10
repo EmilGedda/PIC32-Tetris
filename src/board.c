@@ -40,7 +40,7 @@ char can_move_left(struct block *blk)
 
 	for (int i = 0; i < 4; i++) {
 		int global_x = blk->pos_x; 
-		if (blk->dim[0][i] && board[global_x-1][i])
+		if (blk->dim[0][i] && board[global_x][i])
 			return 0;
 	}
 	

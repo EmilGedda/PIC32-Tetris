@@ -53,12 +53,13 @@ struct block *next_block()
         static char tmp[NUMBLOCKS][4][4];
 
         if (count > 6) {
-		for (int i = 0; i < sizeof(blocks); i++){ //Re-init our bag of blocks
+		for (int i = 0; i < 7; i++){ //Re-init our bag of blocks
                 	copyarray(&dims[i], blocks[i].dim);
-			blocks[i].pos_x = 64;
+		//	blocks[i].dim = &dims[2];
+			blocks[i].pos_x = 60;
 			blocks[i].pos_y = 0;
 		}
-	       shuffle(&blocks); // Shuffle the bag
+	       //shuffle(&blocks); // Shuffle the bag
 	       count = 0;
         }		
 
