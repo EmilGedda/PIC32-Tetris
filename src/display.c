@@ -97,7 +97,7 @@ void display_init(void) {
 }
 
 
-void display_update(char (*bmp)[128][4]) {
+void display_update(char (*bmp)[4]) {
         int c;
         for (int i = 0; i < 4; i++) {
                 DISPLAY_CHANGE_TO_COMMAND_MODE;
@@ -110,29 +110,29 @@ void display_update(char (*bmp)[128][4]) {
                 
                 DISPLAY_CHANGE_TO_DATA_MODE;
                 for (int j = 0; j < 128; j++) {
-			spi_send_recv(~(*bmp)[j][i]);
+			spi_send_recv(~bmp[j][i]);
                 }
         }
 }
 
-void scale_array(char (*bmp)[64][16], char (*scaledbmp)[128][32]) {
+void scale_array(char (*bmp)[16], char (*scaledbmp)[32]) {
         for (int i = 0; i < 128; i++) {
                 for (int j = 0; j < 32; j++) {
-                        (*scaledbmp)[i][j] = (*bmp)[i/2][j/2];
+                        scaledbmp[i][j] = bmp[i/2][j/2];
                 }
         }
 }
 
-void to_bitmap(char (*bmp)[128][4], char (*in)[128][32])
+void to_bitmap(char (*bmp)[4], char (*in)[32])
 {
 	for (int i = 0; i < 128; i++){
 		for (int j = 0; j < 4; j++) {
 			char x;
 			for (int k = 7; k >= 0; k--) {
 				x <<= 1;
-				x |= (*in)[i][k+j*8] & 1;
+				x |= in[i][k+j*8] & 1;
 			}
-			(*bmp)[i][j] = x;
+			bmp[i][j] = x;
 		}
 	}
 }
@@ -149,12 +149,12 @@ void display_string(int line, char *s) {
                 }
 }
 
-void display_game(char (*arr)[64][16]) {
+void display_game(char (*arr)[16]) {
 	char scaledbmp[128][32];
 	char bmp[128][4];
-      	scale_array(arr, &scaledbmp);
-	to_bitmap(&bmp, &scaledbmp);
-	display_update(&bmp);
+      	scale_array(arr, scaledbmp);
+	to_bitmap(bmp, scaledbmp);
+	display_update(bmp);
 }
 
 char* itoaconv(int num) {

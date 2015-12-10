@@ -4,13 +4,13 @@
 
 #define NUMBLOCKS 7
 
-void shuffle(struct block (*bag)[NUMBLOCKS]);
-void copyarray(char (*from)[4][4], char (*to)[4][4]);
+void shuffle(struct block *bag);
+void copyarray(char (*from)[4], char **to);
 
 /* Defines all the available blocks */
 static char dims[NUMBLOCKS][4][4] = {  
 {  
-        {0, 0, 0, 0},
+        {1, 0, 0, 0},
         {0, 0, 0, 0},  
         {0, 0, 0, 0},
         {1, 1, 1, 1}
@@ -54,7 +54,7 @@ struct block *next_block()
 
         if (count > 6) {
 		for (int i = 0; i < 7; i++){ //Re-init our bag of blocks
-                	copyarray(&dims[i], blocks[i].dim);
+                	copyarray(dims[i], blocks[i].dim);
 		//	blocks[i].dim = &dims[2];
 			blocks[i].pos_x = 60;
 			blocks[i].pos_y = 0;
@@ -67,25 +67,25 @@ struct block *next_block()
 }
 
 /* Copies array from to the array to, must be 4x4 arrays */
-void copyarray(char (*from)[4][4], char (*to)[4][4])
+void copyarray(char (*from)[4], char **to)
 { 
 	for (int i = 0; i < 4; ++i)
         {
         	for (int j = 0; j < 4; ++j)
                 {
-             		(*to)[i][j] = (*from)[i][j];
+             		to[i][j] = from[i][j];
                 }
 	}       
 }
 //Shuffles a bag of blocks, Fisher-Yate style
-void shuffle(struct block (*bag)[NUMBLOCKS])
+void shuffle(struct block *bag)
 {
 	for (int i = 0; i < NUMBLOCKS; i++)
 	{
 		int j = rand() % (i + 1);
-		struct block curr = *bag[i];
-		*bag[i] = *bag[j];
-		*bag[j] = *bag[i];
+		struct block curr = bag[i];
+		bag[i] = bag[j];
+		bag[j] = bag[i];
 	}
 }
 void move_up(struct block *b)
