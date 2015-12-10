@@ -9,7 +9,7 @@ struct block {
 /* Returns the next block in the bag, and consumes it */
 struct block *next_block();
 
-void move_right(struct block *b);
+void move_up(struct block *b);
 void move_left(struct block *b);
 void move_down(struct block *b);
 

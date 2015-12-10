@@ -19,10 +19,10 @@
 char textbuffer[4][16];
 
 uint8_t spi_send_recv(uint8_t data) {
-        while (!(SPI2STAT & 0x08));     /* SPI Transmit Buffer Empty Status bit, 1 = empty */
-                SPI2BUF = data;         /* SPI Transmit and Receive Buffer Register */
-        while (!(SPI2STAT & 1));        /* SPI Receive Buffer Full Status bit, 1 = full, */
-                return SPI2BUF;         /* cleared when SPI2BUF is written to */
+        while (!(SPI2STAT & 0x08));	/* SPI Transmit Buffer Empty Status bit, 1 = empty */
+        SPI2BUF = data;			/* SPI Transmit and Receive Buffer Register */
+        while (!(SPI2STAT & 1));	/* SPI Receive Buffer Full Status bit, 1 = full, */
+        return SPI2BUF;  	     	/* cleared when SPI2BUF is written to */
 }
 
 void sleep(int cyc) {
@@ -66,10 +66,11 @@ void display_init(void) {
         /* SPI2CON bit ON = 1; */
         SPI2CONSET = 0x8000;
 
+	/* display_init */
         DISPLAY_CHANGE_TO_COMMAND_MODE;
         sleep(10);
         DISPLAY_ACTIVATE_VDD;
-        sleep(1000000);
+        sleep(10000000);
         
         spi_send_recv(0xAE);
         DISPLAY_ACTIVATE_RESET;
@@ -95,7 +96,8 @@ void display_init(void) {
         spi_send_recv(0xAF);
 }
 
-void display_update(void) {
+
+void display_update(char (*bmp)[128][4]) {
         int c;
         for (int i = 0; i < 4; i++) {
                 DISPLAY_CHANGE_TO_COMMAND_MODE;
@@ -107,37 +109,36 @@ void display_update(void) {
                 spi_send_recv(0x10);
                 
                 DISPLAY_CHANGE_TO_DATA_MODE;
-                
-                for (int j = 0; j < 16; j++) {
-                        c = textbuffer[i][j];
-                        if(c & 0x80)
-                                continue;
-                        
-                        for (int k = 0; k < 8; k++)
-                                spi_send_recv(font[c*8 + k]);
+                for (int j = 0; j < 128; j++) {
+			spi_send_recv(~(*bmp)[j][i]);
                 }
         }
 }
 
-char* scale_array(char *bmp, int scale) {
-        char *scaledbmp;
-        int count = 0;
-        for (int i = 0; i < sizeof(bmp); i++) {
-                for (int j = 0; j < sizeof(bmp[i]); j++) {
-                        for (int k = 0; k < scale; k++) {
-                                scaledbmp[count] = bmp[j];
-                                count++;
-                        }
+void scale_array(char (*bmp)[64][16], char (*scaledbmp)[128][32]) {
+        for (int i = 0; i < 128; i++) {
+                for (int j = 0; j < 32; j++) {
+                        (*scaledbmp)[i][j] = (*bmp)[i/2][j/2];
                 }
         }
-        return scaledbmp;
+}
+
+void to_bitmap(char (*bmp)[128][4], char (*in)[128][32])
+{
+	for (int i = 0; i < 128; i++){
+		for (int j = 0; j < 4; j++) {
+			char x;
+			for (int k = 7; k >= 0; k--) {
+				x <<= 1;
+				x |= (*in)[i][k+j*8] & 1;
+			}
+			(*bmp)[i][j] = x;
+		}
+	}
 }
 
 void display_string(int line, char *s) {
-        if (line < 0 || line >= 4)
-                return;
-        if (!s)
-                return;
+        if (line < 0 || line >= 4 || !s) return;
         
         for (int i = 0; i < 16; i++)
                 if (*s) {
@@ -148,42 +149,30 @@ void display_string(int line, char *s) {
                 }
 }
 
-void display_game(char* arr) {
-        arr = scale_array(arr, 2);
-        display_bitmap(arr);
-        display_update();
+void display_game(char (*arr)[64][16]) {
+	char scaledbmp[128][32];
+	char bmp[128][4];
+      	scale_array(arr, &scaledbmp);
+	to_bitmap(&bmp, &scaledbmp);
+	display_update(&bmp);
 }
 
-void display_bitmap(const char *bmp) {
-        for (int i = 0; i < 4; i++) {
-                DISPLAY_CHANGE_TO_COMMAND_MODE;
-
-                spi_send_recv(0x22);
-                spi_send_recv(i);
-
-                DISPLAY_CHANGE_TO_DATA_MODE;
-
-                for (int j = 0; j < 32; j++)
-                        spi_send_recv(~bmp[i*32 + j]);
-        }
-        display_update();
-}
 char* itoaconv(int num) {
         register int i, sign;
         static char itoa_buffer[ITOA_BUFSIZ];
         static const char maxneg[] = "-2147483648";
 
         itoa_buffer[ITOA_BUFSIZ - 1] = 0;   /* Insert the end-of-string marker. */
-        sign = num;                           /* Save sign. */
-        if (num < 0 && num - 1 > 0) {        /* Check for most negative integer */
+        sign = num;                         /* Save sign. */
+        if (num < 0 && num - 1 > 0) {       /* Check for most negative integer */
                 for (i = 0; i < sizeof(maxneg); i += 1)
                         itoa_buffer[i + 1] = maxneg[i];
                 i = 0;
         } else {
-                if (num < 0) num = -num;           /* Make number positive. */
+                if (num < 0) num = -num;            /* Make number positive. */
                         i = ITOA_BUFSIZ - 2;        /* Location for first ASCII digit. */
                 do {
-                        itoa_buffer[i] = num % 10 + '0';      /* Insert next digit. */
+                        itoa_buffer[i] = num % 10 + '0';        /* Insert next digit. */
                         num = num / 10;                         /* Remove digit from number. */
                         i -= 1;                                 /* Move index to next empty position. */
                 } while (num > 0);
