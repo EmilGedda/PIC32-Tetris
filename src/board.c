@@ -17,9 +17,9 @@ void merge(struct block *blk, char (*b)[64][16])
 {
 	for (int i = 0; i < 4; i++) {
 		for(int j = 0; j < 4; j++) {
-			int global_y = blk->pos_y + i;
-			int global_x = blk->pos_x + j;
-			if (blk->dim[j][i])
+			int global_x = blk->pos_x + i;
+			int global_y = blk->pos_y + j;
+			if (blk->dim[i][j])
 				(*b)[global_x][global_y] = 1;
 		}	
 	}
@@ -36,7 +36,7 @@ void update_board(struct block *blk)
 
 char can_move_left(struct block *blk)
 {
-	if (blk->pos_x <= 1) return 0;
+	if (blk->pos_x <= 0) return 0;
 
 	for (int i = 0; i < 4; i++) {
 		int global_x = blk->pos_x; 
