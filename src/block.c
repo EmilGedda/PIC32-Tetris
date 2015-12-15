@@ -54,7 +54,7 @@ struct block *next_block()
 
         if (count > 6) {
 		for (int i = 0; i < 7; i++){ //Re-init our bag of blocks
-                	copyarray(&dims[i], blocks[i].dim);
+                	blocks[i].dim = &dims[i];
 			blocks[i].pos_x = 62;
 			blocks[i].pos_y = 0;
 		}
@@ -69,12 +69,8 @@ struct block *next_block()
 void copyarray(char (*from)[4][4], char (*to)[4][4])
 { 
 	for (int i = 0; i < 4; ++i)
-        {
-        	for (int j = 0; j < 4; ++j)
-                {
-             		(*to)[i][j] = (*from)[i][j];
-                }
-	}       
+	for (int j = 0; j < 4; ++j)
+		(*to)[i][j] = (*from)[i][j];
 }
 //Shuffles a bag of blocks, Fisher-Yate style
 void shuffle(struct block (*bag)[NUMBLOCKS])
