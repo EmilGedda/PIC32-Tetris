@@ -86,7 +86,8 @@ void shuffle(struct block (*bag)[NUMBLOCKS])
 void move_up(struct block *b)
 {
         /* TODO: Add validation */
-        if(b->pos_y > 0) b->pos_y--;
+        if(b->pos_y > 0)
+		b->pos_y--;
 }
 void move_left(struct block *b)
 {
@@ -95,7 +96,8 @@ void move_left(struct block *b)
 
 void move_down(struct block *b)
 {
- 	if(b->pos_y < 12) b->pos_y++;
+ 	if(b->pos_y < 12) 
+		b->pos_y++;
 }
 
 void rotate_right(struct block *b)

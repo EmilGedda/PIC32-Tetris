@@ -1,4 +1,5 @@
 #include "block.h"
+#include "score.h"
 #include "display.h"
 #include "board.h"
 
@@ -11,6 +12,7 @@ void merge(struct block *blk, char (*b)[64][16]);
 void merge_with_board(struct block *blk)
 {
 	merge(blk, &board);
+	check_lineclears();
 }
 
 void merge(struct block *blk, char (*b)[64][16])
@@ -33,9 +35,30 @@ void update_board(struct block *blk)
 	display_game(&tmp);
 }
 
+void shift_board_left(int column)
+{
+	for (int i = column; i < 64; i++)
+	for (int j = 0; j < 16; j++) 
+		board[i][j] = (i+1) < 64 ? board[i+1][j] : 0;
+}
 
+void check_lineclears(void)
+{
+	int lines = 0;
+	for (int i = 0; i < 64; i++) {
+		char full = 1;
+		for (int j = 0; j < 16; j++) 
+			full &= board[i][j];
+		if (full) { 
+			shift_board_left(i--);
+			lines++;
+		}
+	}
+	lineclears(lines); /* Update score */
+}
 char can_move_left(struct block *blk)
 {
+	if(blk->pos_x >= 60) return 1;
 	int global_x = blk->pos_x;
 	int global_y = blk->pos_y;
 	char (*tmp)[4][4] = blk->dim;
@@ -51,8 +74,10 @@ char can_move_left(struct block *blk)
 
 void _copyarray(char (*from)[64][16], char (*to)[64][16])
 { 
-	for (int i = 0; i < 64; ++i)
-	for (int j = 0; j < 16; ++j)
-		(*to)[i][j] = (*from)[i][j];
+	for (int i = 0; i < 64; ++i) {
+		for (int j = 0; j < 16; ++j) {
+			(*to)[i][j] = (*from)[i][j];
+		}
+	}
 }
 

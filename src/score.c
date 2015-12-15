@@ -18,9 +18,10 @@ int pointsperline(int amnt)
                 return 300;
         case 4:      
                 return 1200;  
-        default:
         case 1:
                 return 40;
+	case 0:
+		return 0;
         }
 }
 
