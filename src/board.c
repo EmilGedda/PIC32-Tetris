@@ -15,12 +15,12 @@ void merge_with_board(struct block *blk)
 
 void merge(struct block *blk, char (*b)[64][16])
 {
+	char (*tmp)[4][4] = blk->dim;
 	for (int i = 0; i < 4; i++) {
 		for(int j = 0; j < 4; j++) {
 			int global_x = blk->pos_x + i;
 			int global_y = blk->pos_y + j;
-			if (blk->dim[i][j])
-				(*b)[global_x][global_y] = 1;
+			(*b)[global_x][global_y] |= (*tmp)[i][j];
 		}	
 	}
 }
@@ -36,12 +36,14 @@ void update_board(struct block *blk)
 
 char can_move_left(struct block *blk)
 {
-	if (blk->pos_x <= 0) return 0;
-
+	int global_x = blk->pos_x;
+	int global_y = blk->pos_y;
+	char (*tmp)[4][4] = blk->dim;
 	for (int i = 0; i < 4; i++) {
-		int global_x = blk->pos_x; 
-		if (blk->dim[0][i] && board[global_x][i])
-			return 0;
+		for (int j = 0; j < 4; j++) {
+			if((*tmp)[j][i] && (board[global_x + j-1][global_y + i] || ((global_x + j) <= 0)))
+				return 0;
+		}
 	}
 	
 	return 1;	
@@ -50,11 +52,7 @@ char can_move_left(struct block *blk)
 void _copyarray(char (*from)[64][16], char (*to)[64][16])
 { 
 	for (int i = 0; i < 64; ++i)
-        {
-        	for (int j = 0; j < 16; ++j)
-                {
-             		(*to)[i][j] = (*from)[i][j];
-                }
-	}       
+	for (int j = 0; j < 16; ++j)
+		(*to)[i][j] = (*from)[i][j];
 }
 
