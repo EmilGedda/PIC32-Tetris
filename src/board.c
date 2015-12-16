@@ -58,7 +58,6 @@ void check_lineclears(void)
 }
 char can_move_left(struct block *blk)
 {
-//	if(blk->pos_x >= 62) return 1;
 	int global_x = blk->pos_x;
 	int global_y = blk->pos_y;
 	char (*tmp)[4][4] = blk->dim;
@@ -70,6 +69,38 @@ char can_move_left(struct block *blk)
 	}
 	
 	return 1;	
+}
+
+void try_move_up(struct block *blk)
+{
+	int global_x = blk->pos_x;
+	int global_y = blk->pos_y;
+	char (*tmp)[4][4] = blk->dim;
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			if ((*tmp)[j][i] && global_y + i <= 0) 
+				return;  
+			if ((*tmp)[j][i] && board[global_x + j][global_y + i + 1])
+				return;
+		}
+	}
+	move_up(blk);	
+}
+
+void try_move_down(struct block *blk)
+{
+	int global_x = blk->pos_x;
+	int global_y = blk->pos_y;
+	char (*tmp)[4][4] = blk->dim;
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			if ((*tmp)[j][i] && global_y + i + 1 > 15) 
+				return;  
+			if ((*tmp)[j][i] && board[global_x + j][global_y + i + 1])
+				return;
+		}
+	}
+	move_down(blk);	
 }
 
 void _copyarray(char (*from)[64][16], char (*to)[64][16])

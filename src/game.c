@@ -3,14 +3,16 @@
 #include "board.h"
 #include <pic32mx.h>
 #include "random.h"
+#include "score.h"
+
 static struct block *curr; 
 void handle_input(int *inputs);
 
 static void (*f[4])(struct block *blk) = {
 		rotate_right,
 		rotate_left,
-		move_down,
-		move_up
+		try_move_down,
+		try_move_up
 };
 
 void run(void)
