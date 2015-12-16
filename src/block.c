@@ -55,8 +55,8 @@ struct block *next_block()
         if (count > 6) {
 		for (int i = 0; i < 7; i++){ //Re-init our bag of blocks
                 	blocks[i].dim = &dims[i];
-			blocks[i].pos_x = 62;
-			blocks[i].pos_y = 0;
+			blocks[i].pos_x = 58;
+			blocks[i].pos_y = 6;
 		}
 	       //shuffle(&blocks); // Shuffle the bag
 	       count = 0;

@@ -58,7 +58,7 @@ void check_lineclears(void)
 }
 char can_move_left(struct block *blk)
 {
-	if(blk->pos_x >= 60) return 1;
+//	if(blk->pos_x >= 62) return 1;
 	int global_x = blk->pos_x;
 	int global_y = blk->pos_y;
 	char (*tmp)[4][4] = blk->dim;

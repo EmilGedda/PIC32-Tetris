@@ -46,6 +46,8 @@ void on_tick()
 	} else {
 		merge_with_board(curr);
 		curr = next_block();
+		if(!can_move_left(curr))
+			exit_game();
 	}
 	update_board(curr);
 	
