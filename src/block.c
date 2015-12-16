@@ -101,42 +101,38 @@ void move_down(struct block *b)
 	b->pos_y++;
 }
 
-void rotate_right(struct block *b)
+void transpose(char (*arr)[4][4])
 {
-        transpose_rows(b);
-        reverse(b);
+        static char tmp[4][4];
+        copyarray(arr, &tmp);
+        for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
+                (*arr)[i][j] = tmp[j][i];
+}
+
+void reverse(char (*arr)[4])
+{
+        int tmp = (*arr)[0];
+	(*arr)[0] = (*arr)[3];
+	(*arr)[3] = tmp;
+	tmp = (*arr)[1];
+	(*arr)[1] = (*arr)[2];
+	(*arr)[2] = tmp;
+
 }
 
 void rotate_left(struct block *b)
 {
-        transpose_cols(b);
-        reverse(b);
+	char (*tmp)[4][4] = b->dim;
+        transpose(tmp);
+	for(int i = 0; i < 4; i++)
+		reverse(&((*tmp)[i]));
 }
 
-void transpose_rows(char (*arr)[4][4])
+void rotate_right(struct block *b)
 {
-        char (*tmp)[4][4];
-        copyarray(arr, tmp);
-        for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 4; j++)
-                (*arr)[j][i] = *(tmp)[i][j];
+        for(int i = 0; i < 3; i++)
+		rotate_left(b);
 }
 
-void transpose_cols(char (*arr)[4][4])
-{
-        char (*tmp)[4][4];
-        copyarray(arr, tmp);
-        for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 4; j++)
-                (*arr)[i][j] = *(tmp)[j][i];
-}
 
-void reverse(char *arr)
-{
-        int tmp;
-        char (*temparr)[4][4] = arr;
-        for (int i = 0; i < 2; i++) {
-                temparr = arr[2-i-1];
-                arr[2-i-1] = arr[i];
-        }
-}
