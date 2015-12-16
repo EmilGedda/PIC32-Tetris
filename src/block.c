@@ -54,10 +54,9 @@ struct block *next_block()
 
         if (count > 6) {
 		for (int i = 0; i < 7; i++){ //Re-init our bag of blocks
-                	copyarray(&dims[i], blocks[i].dim);
-		//	blocks[i].dim = &dims[2];
-			blocks[i].pos_x = 60;
-			blocks[i].pos_y = 0;
+                	blocks[i].dim = &dims[i];
+			blocks[i].pos_x = 58;
+			blocks[i].pos_y = 6;
 		}
 	       //shuffle(&blocks); // Shuffle the bag
 	       count = 0;
@@ -70,13 +69,10 @@ struct block *next_block()
 void copyarray(char (*from)[4][4], char (*to)[4][4])
 { 
 	for (int i = 0; i < 4; ++i)
-        {
-        	for (int j = 0; j < 4; ++j)
-                {
-             		(*to)[i][j] = (*from)[i][j];
-                }
-	}       
+	for (int j = 0; j < 4; ++j)
+		(*to)[i][j] = (*from)[i][j];
 }
+
 //Shuffles a bag of blocks, Fisher-Yate style
 void shuffle(struct block (*bag)[NUMBLOCKS])
 {
@@ -88,11 +84,13 @@ void shuffle(struct block (*bag)[NUMBLOCKS])
 		*bag[j] = *bag[i];
 	}
 }
+
 void move_up(struct block *b)
 {
         /* TODO: Add validation */
-        if(b->pos_y > 0) b->pos_y--;
+	b->pos_y--;
 }
+
 void move_left(struct block *b)
 {
         b->pos_x--;
@@ -100,15 +98,41 @@ void move_left(struct block *b)
 
 void move_down(struct block *b)
 {
- 	if(b->pos_y < 12) b->pos_y++;
+	b->pos_y++;
 }
 
-void rotate_right(struct block *b)
+void transpose(char (*arr)[4][4])
 {
-	/* TODO: Implement */
+        static char tmp[4][4];
+        copyarray(arr, &tmp);
+        for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
+                (*arr)[i][j] = tmp[j][i];
+}
+
+void reverse(char (*arr)[4])
+{
+        int tmp = (*arr)[0];
+	(*arr)[0] = (*arr)[3];
+	(*arr)[3] = tmp;
+	tmp = (*arr)[1];
+	(*arr)[1] = (*arr)[2];
+	(*arr)[2] = tmp;
+
 }
 
 void rotate_left(struct block *b)
 {
-	/* TODO: Implement */
+	char (*tmp)[4][4] = b->dim;
+        transpose(tmp);
+	for(int i = 0; i < 4; i++)
+		reverse(&((*tmp)[i]));
 }
+
+void rotate_right(struct block *b)
+{
+        for(int i = 0; i < 3; i++)
+		rotate_left(b);
+}
+
+

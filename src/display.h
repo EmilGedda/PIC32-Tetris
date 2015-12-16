@@ -10,4 +10,7 @@ void display_bitmap(int x, const char *bmp);
 /* Scales game graphics accordingly and displays them on OLED display */
 void display_game(char (*arr)[64][16]);
 
+void display_update_text(void);
+
+char* itoaconv(int num); 
 #endif

@@ -16,4 +16,6 @@ void incrementLevel(void);
 /* Returns the current level */
 int getLevel(void);
 
+/* Show score and hang */
+void exit_game(void);
 #endif
