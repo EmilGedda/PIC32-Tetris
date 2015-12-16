@@ -30,3 +30,7 @@
 
 # Debug files
 *.dSYM/
+*.deps
+*~
+*.swp
+*.swo
