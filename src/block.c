@@ -72,6 +72,7 @@ void copyarray(char (*from)[4][4], char (*to)[4][4])
 	for (int j = 0; j < 4; ++j)
 		(*to)[i][j] = (*from)[i][j];
 }
+
 //Shuffles a bag of blocks, Fisher-Yate style
 void shuffle(struct block (*bag)[NUMBLOCKS])
 {
@@ -83,11 +84,13 @@ void shuffle(struct block (*bag)[NUMBLOCKS])
 		*bag[j] = *bag[i];
 	}
 }
+
 void move_up(struct block *b)
 {
         /* TODO: Add validation */
 	b->pos_y--;
 }
+
 void move_left(struct block *b)
 {
         b->pos_x--;
@@ -100,10 +103,40 @@ void move_down(struct block *b)
 
 void rotate_right(struct block *b)
 {
-	/* TODO: Implement */
+        transpose_rows(b);
+        reverse(b);
 }
 
 void rotate_left(struct block *b)
 {
-	/* TODO: Implement */
+        transpose_cols(b);
+        reverse(b);
+}
+
+void transpose_rows(char (*arr)[4][4])
+{
+        char (*tmp)[4][4];
+        copyarray(arr, tmp);
+        for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
+                (*arr)[j][i] = *(tmp)[i][j];
+}
+
+void transpose_cols(char (*arr)[4][4])
+{
+        char (*tmp)[4][4];
+        copyarray(arr, tmp);
+        for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
+                (*arr)[i][j] = *(tmp)[j][i];
+}
+
+void reverse(char *arr)
+{
+        int tmp;
+        char (*temparr)[4][4] = arr;
+        for (int i = 0; i < 2; i++) {
+                temparr = arr[2-i-1];
+                arr[2-i-1] = arr[i];
+        }
 }
